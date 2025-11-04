@@ -10,8 +10,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'tomato-farm-secret-key-2025')
 CORS(app)
 
-# Admin password - change this to your desired password
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+# Admin authentication is now done via database
 
 # Decorator to check if user is logged in
 def login_required(f):
@@ -96,14 +95,35 @@ def login():
 
 @app.route('/login/admin', methods=['POST'])
 def login_admin():
+    email = request.form.get('email', '').strip()
     password = request.form.get('password', '')
-    if password == ADMIN_PASSWORD:
-        session['user_type'] = 'admin'
-        session['username'] = 'Admin'
-        flash('Welcome Admin! You have full access.', 'success')
-        return redirect(url_for('index'))
-    else:
-        flash('Incorrect password. Please try again.', 'error')
+    
+    connection = get_db_connection()
+    if not connection:
+        flash('Database connection error. Please try again.', 'error')
+        return redirect(url_for('login'))
+    
+    try:
+        cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        
+        if user and user['password'] == password:
+            session['user_type'] = 'admin'
+            session['username'] = user['full_name'] or 'Admin'
+            session['user_email'] = user['email']
+            flash(f'Welcome {session["username"]}! You have full access.', 'success')
+            release_db_connection(connection)
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid email or password. Please try again.', 'error')
+            release_db_connection(connection)
+            return redirect(url_for('login'))
+    except Exception as e:
+        print(f"Login error: {e}")
+        flash('Login error. Please try again.', 'error')
+        release_db_connection(connection)
         return redirect(url_for('login'))
 
 @app.route('/login/guest', methods=['POST'])

@@ -107,6 +107,15 @@ CREATE TABLE IF NOT EXISTS irrigation (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create users table for admin accounts
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert sample inventory data
 INSERT INTO inventory (item_name, category, quantity, unit, min_quantity, supplier) VALUES
 ('Tomato Seeds - Roma', 'Seeds', 50, 'packets', 10, 'AgriSupply Co'),
@@ -116,4 +125,9 @@ INSERT INTO inventory (item_name, category, quantity, unit, min_quantity, suppli
 ('Pesticide - Insect Control', 'Pesticide', 25, 'liters', 5, 'CropCare Inc'),
 ('Fungicide', 'Pesticide', 15, 'liters', 5, 'CropCare Inc'),
 ('Watering Hoses', 'Equipment', 10, 'units', 2, 'FarmTools')
+ON CONFLICT DO NOTHING;
+
+-- Insert default admin account (email: admin@daevtech.com, password: admin123)
+INSERT INTO users (email, password, full_name) VALUES
+('admin@daevtech.com', 'admin123', 'Administrator')
 ON CONFLICT DO NOTHING;
