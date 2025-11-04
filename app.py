@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_cors import CORS
-import mysql.connector
-from mysql.connector import Error
+import psycopg2
+from psycopg2 import pool, extras
 from datetime import datetime, timedelta
 import os
 
@@ -9,45 +9,59 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'tomato-farm-secret-key-2025')
 CORS(app)
 
-DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'farmdb'
-}
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+connection_pool = None
+
+def init_pool():
+    global connection_pool
+    if DATABASE_URL and not connection_pool:
+        try:
+            connection_pool = pool.SimpleConnectionPool(1, 10, DATABASE_URL)
+            print("Database connection pool created successfully!")
+        except Exception as e:
+            print(f"Error creating connection pool: {e}")
 
 def get_db_connection():
     try:
-        connection = mysql.connector.connect(**DB_CONFIG)
-        return connection
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
+        if not connection_pool:
+            init_pool()
+        if connection_pool:
+            return connection_pool.getconn()
         return None
+    except Exception as e:
+        print(f"Error getting database connection: {e}")
+        return None
+
+def release_db_connection(conn):
+    if connection_pool and conn:
+        connection_pool.putconn(conn)
 
 def init_db():
     try:
-        connection = mysql.connector.connect(
-            host=DB_CONFIG['host'],
-            user=DB_CONFIG['user'],
-            password=DB_CONFIG['password']
-        )
+        if not DATABASE_URL:
+            print("DATABASE_URL not found. Please create a PostgreSQL database in the Database tab.")
+            return
+        
+        connection = get_db_connection()
+        if not connection:
+            print("Could not connect to database")
+            return
+            
         cursor = connection.cursor()
         
-        with open('database/schema.sql', 'r') as f:
+        with open('database/schema_postgres.sql', 'r') as f:
             sql_script = f.read()
         
-        for statement in sql_script.split(';'):
-            if statement.strip():
-                cursor.execute(statement)
-        
+        cursor.execute(sql_script)
         connection.commit()
         cursor.close()
-        connection.close()
+        release_db_connection(connection)
         print("Database initialized successfully!")
-    except Error as e:
+    except Exception as e:
         print(f"Error initializing database: {e}")
-        print("Note: MySQL is not running. Please set up MySQL and run the application again.")
-        print("For local setup: Install MySQL, start the server, and update DB_CONFIG in app.py")
+        if connection:
+            release_db_connection(connection)
 
 @app.route('/')
 def index():
@@ -61,11 +75,11 @@ def index():
     recent_activities = []
     
     if not connection:
-        flash('Database not connected. Please set up MySQL and import the schema. See MYSQL_SETUP.md for instructions.', 'error')
+        flash('Database not connected. Please create a PostgreSQL database in the Database tab.', 'error')
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             
             cursor.execute("SELECT COUNT(*) as count FROM tomato_plants")
             result = cursor.fetchone()
@@ -85,17 +99,17 @@ def index():
             
             cursor.execute("""
                 SELECT 'Planting' as type, planting_date as date, 
-                       CONCAT(variety, ' - ', quantity, ' plants') as details
+                       variety || ' - ' || quantity || ' plants' as details
                 FROM tomato_plants 
                 ORDER BY planting_date DESC LIMIT 5
             """)
             recent_activities = cursor.fetchall()
             
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('index.html', stats=stats, recent_activities=recent_activities)
 
@@ -106,17 +120,17 @@ def planting():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             cursor.execute("""
                 SELECT * FROM tomato_plants 
                 ORDER BY planting_date DESC
             """)
             plants = cursor.fetchall()
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('planting.html', plants=plants)
 
@@ -144,11 +158,11 @@ def add_planting():
             connection.commit()
             cursor.close()
             flash('Planting record added successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error adding planting record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('planting'))
 
@@ -163,11 +177,11 @@ def delete_planting(id):
             connection.commit()
             cursor.close()
             flash('Planting record deleted successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error deleting record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('planting'))
 
@@ -179,7 +193,7 @@ def harvesting():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             
             cursor.execute("""
                 SELECT h.*, p.variety as plant_variety
@@ -193,10 +207,10 @@ def harvesting():
             plants = cursor.fetchall()
             
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('harvesting.html', harvests=harvests, plants=plants)
 
@@ -225,11 +239,11 @@ def add_harvest():
             connection.commit()
             cursor.close()
             flash('Harvest record added successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error adding harvest record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('harvesting'))
 
@@ -244,11 +258,11 @@ def delete_harvest(id):
             connection.commit()
             cursor.close()
             flash('Harvest record deleted successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error deleting record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('harvesting'))
 
@@ -259,14 +273,14 @@ def inventory():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             cursor.execute("SELECT * FROM inventory ORDER BY item_name")
             items = cursor.fetchall()
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('inventory.html', inventory=items)
 
@@ -293,11 +307,11 @@ def add_inventory():
             connection.commit()
             cursor.close()
             flash('Inventory item added successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error adding inventory item', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('inventory'))
 
@@ -312,11 +326,11 @@ def delete_inventory(id):
             connection.commit()
             cursor.close()
             flash('Inventory item deleted successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error deleting item', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('inventory'))
 
@@ -327,14 +341,14 @@ def operations():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             cursor.execute("SELECT * FROM operations ORDER BY operation_date DESC")
             ops = cursor.fetchall()
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('operations.html', operations=ops)
 
@@ -362,11 +376,11 @@ def add_operation():
             connection.commit()
             cursor.close()
             flash('Operation record added successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error adding operation record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('operations'))
 
@@ -381,11 +395,11 @@ def delete_operation(id):
             connection.commit()
             cursor.close()
             flash('Operation record deleted successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error deleting record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('operations'))
 
@@ -396,14 +410,14 @@ def sales():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             cursor.execute("SELECT * FROM sales ORDER BY sale_date DESC")
             sale_records = cursor.fetchall()
             cursor.close()
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return render_template('sales.html', sales=sale_records)
 
@@ -432,11 +446,11 @@ def add_sale():
             connection.commit()
             cursor.close()
             flash('Sale record added successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error adding sale record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('sales'))
 
@@ -451,15 +465,17 @@ def delete_sale(id):
             connection.commit()
             cursor.close()
             flash('Sale record deleted successfully!', 'success')
-        except Error as e:
+        except Exception as e:
             print(f"Database error: {e}")
             flash('Error deleting record', 'error')
         finally:
-            connection.close()
+            release_db_connection(connection)
     
     return redirect(url_for('sales'))
 
 if __name__ == '__main__':
+    print("Initializing connection pool...")
+    init_pool()
     print("Initializing database...")
     init_db()
     print("Starting Flask server on http://0.0.0.0:5000")
