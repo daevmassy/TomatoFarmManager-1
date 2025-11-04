@@ -2,10 +2,12 @@
 
 {% block title %}Harvesting - Tomato Farm Management System{% endblock %}
 
-{% block content %}
-<h2>🧺 Harvest Management</h2>
+{% block page_title %}Harvest Management{% endblock %}
 
-<form method="POST" action="/harvesting/add">
+{% block content %}
+<div class="form-section">
+    <h3>Record Harvest</h3>
+    <form method="POST" action="/harvesting/add">
     <div class="form-row">
         <div class="form-group">
             <label for="plant_id">Plant Record</label>
@@ -55,9 +57,10 @@
     </div>
     
     <button type="submit" class="btn">Record Harvest</button>
-</form>
+    </form>
+</div>
 
-<h2 style="margin-top: 40px;">📋 Harvest Records</h2>
+<h2>Harvest Records</h2>
 <table>
     <thead>
         <tr>

@@ -2,50 +2,85 @@
 
 {% block title %}Home - Tomato Farm Management System{% endblock %}
 
-{% block content %}
-<h2>🏠 Dashboard</h2>
-<p>Welcome to the Tomato Farm Management System. Monitor and manage all aspects of your tomato farming operations.</p>
+{% block page_title %}Farm Dashboard{% endblock %}
 
+{% block content %}
 <div class="dashboard-cards">
     <div class="card">
-        <h3>🌱 Total Plants</h3>
+        <h3>Total Plants</h3>
         <p>{{ stats.total_plants }}</p>
     </div>
     <div class="card">
-        <h3>🧺 Total Harvest</h3>
+        <h3>Total Harvest</h3>
         <p>{{ stats.total_harvest }} kg</p>
     </div>
     <div class="card">
-        <h3>📦 Inventory Items</h3>
+        <h3>Inventory Items</h3>
         <p>{{ stats.inventory_items }}</p>
     </div>
     <div class="card">
-        <h3>💰 Total Sales</h3>
+        <h3>Total Sales</h3>
         <p>${{ stats.total_sales }}</p>
     </div>
 </div>
 
-<h2 style="margin-top: 40px;">📊 Recent Activity</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Activity Type</th>
-            <th>Date</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for activity in recent_activities %}
-        <tr>
-            <td>{{ activity.type }}</td>
-            <td>{{ activity.date }}</td>
-            <td>{{ activity.details }}</td>
-        </tr>
+<div class="activity-grid">
+    <div class="activity-section">
+        <h3>Recent Plantings</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Variety</th>
+                    <th>Planting Date</th>
+                    <th>Expected Harvest</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_activities %}
+                    {% for activity in recent_activities[:5] %}
+                    {% if activity.type == 'Planting' %}
+                    <tr>
+                        <td>{{ activity.details }}</td>
+                        <td>{{ activity.date }}</td>
+                        <td>-</td>
+                        <td>Active</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="4" class="empty-state">No plants registered yet</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="activity-section">
+        <h3>Recent Activities</h3>
+        {% if recent_activities %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity Type</th>
+                    <th>Date</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in recent_activities[:5] %}
+                <tr>
+                    <td>{{ activity.type }}</td>
+                    <td>{{ activity.date }}</td>
+                    <td>{{ activity.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% else %}
-        <tr>
-            <td colspan="3" style="text-align: center;">No recent activities</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <div class="empty-state">No activities recorded yet</div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

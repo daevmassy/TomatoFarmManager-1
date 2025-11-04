@@ -7,48 +7,67 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>🍅 Tomato Farm Management System</h1>
-        <p>Manage Your Tomato Farm Efficiently</p>
-        {% if session.get('user_type') %}
-        <div style="position: absolute; top: 20px; right: 20px; color: white;">
-            <span style="background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 20px; margin-right: 10px;">
-                {% if session.get('user_type') == 'admin' %}👨‍💼{% else %}👤{% endif %} {{ session.get('username', 'User') }}
-            </span>
-            <a href="/logout" style="background: #f44336; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none;">Logout</a>
+    {% if session.get('user_type') %}
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🍅</div>
+            <div class="brand">
+                <div class="brand-name">Tomato Farm</div>
+                <div class="brand-subtitle">Management System</div>
+            </div>
         </div>
-        {% endif %}
-    </header>
-
-    <div class="container">
-        <nav>
-            <ul>
-                <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">🏠 Home</a></li>
-                <li><a href="/planting" class="{{ 'active' if request.path == '/planting' else '' }}">🌱 Planting</a></li>
-                <li><a href="/harvesting" class="{{ 'active' if request.path == '/harvesting' else '' }}">🧺 Harvesting</a></li>
-                <li><a href="/inventory" class="{{ 'active' if request.path == '/inventory' else '' }}">📦 Inventory</a></li>
-                <li><a href="/operations" class="{{ 'active' if request.path == '/operations' else '' }}">⚙️ Operations</a></li>
-                <li><a href="/sales" class="{{ 'active' if request.path == '/sales' else '' }}">💰 Sales</a></li>
-            </ul>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Navigation</div>
+                <ul>
+                    <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}"><span>🏠</span> <span>Dashboard</span></a></li>
+                    <li><a href="/planting" class="{{ 'active' if request.path == '/planting' else '' }}"><span>🌱</span> <span>Planting</span></a></li>
+                    <li><a href="/harvesting" class="{{ 'active' if request.path == '/harvesting' else '' }}"><span>🧺</span> <span>Harvest</span></a></li>
+                    <li><a href="/inventory" class="{{ 'active' if request.path == '/inventory' else '' }}"><span>📦</span> <span>Inventory</span></a></li>
+                    <li><a href="/operations" class="{{ 'active' if request.path == '/operations' else '' }}"><span>⚙️</span> <span>Activities</span></a></li>
+                    <li><a href="/sales" class="{{ 'active' if request.path == '/sales' else '' }}"><span>💰</span> <span>Sales</span></a></li>
+                </ul>
+            </div>
         </nav>
+    </aside>
+    {% endif %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header>
+            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            {% if session.get('user_type') %}
+            <div class="header-right">
+                <button class="theme-toggle">☀️</button>
+                <div class="user-info">
+                    <span>{% if session.get('user_type') == 'admin' %}👨‍💼{% else %}👤{% endif %} {{ session.get('username', 'User') }}</span>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
             {% endif %}
-        {% endwith %}
+        </header>
 
-        <div class="content-wrapper">
-            {% block content %}{% endblock %}
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+
+            <footer>
+                <p>&copy; 2025 daevtech | Manage Your Farm with Excellence</p>
+            </footer>
         </div>
-
-        <footer>
-            <p>&copy; 2025 daevtech | Manage Your Farm with Excellence</p>
-        </footer>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
