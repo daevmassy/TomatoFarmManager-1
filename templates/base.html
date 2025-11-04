@@ -14,6 +14,9 @@
             <h1>Tomato Farm Management System</h1>
             <p>Manage Your Tomato Farm Efficiently</p>
             <div class="header-right">
+                <button id="themeToggle" onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 15px; font-weight: 600; transition: all 0.3s ease;">
+                    🌓 Theme
+                </button>
                 <div class="user-info">
                     <span>{% if session.get('user_type') == 'admin' %}👨‍💼 Admin{% else %}👤 Employee{% endif %}: {{ session.get('username', 'User') }}</span>
                     {% if session.get('user_type') == 'guest' %}
@@ -88,6 +91,29 @@
         function hideAdminUpgrade() {
             document.getElementById('adminUpgradeModal').style.display = 'none';
         }
+        
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            if (newTheme === 'light') {
+                body.classList.add('light-theme');
+            } else {
+                body.classList.remove('light-theme');
+            }
+            
+            localStorage.setItem('theme', newTheme);
+        }
+        
+        // Apply saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>
