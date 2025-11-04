@@ -1,0 +1,154 @@
+
+{% extends "base.html" %}
+
+{% block title %}Employee Tasks - Tomato Farm Management System{% endblock %}
+
+{% block content %}
+<h2>👷 Employee Daily Tasks</h2>
+<p style="color: #666; margin-bottom: 30px;">Manage and view daily tasks for all farm employees.</p>
+
+{% if session.get('user_type') == 'admin' %}
+<div class="card" style="margin-bottom: 30px;">
+    <h3>➕ Assign New Task</h3>
+    <form method="POST" action="/employee_tasks/add">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="employee_number">Employee Number *</label>
+                <select id="employee_number" name="employee_number" required>
+                    <option value="">Select Employee</option>
+                    {% for i in range(1, 11) %}
+                    <option value="{{ i }}">Employee {{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="task_date">Task Date *</label>
+                <input type="date" id="task_date" name="task_date" required value="{{ today }}">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="task_type">Task Type *</label>
+                <select id="task_type" name="task_type" required>
+                    <option value="">Select Task Type</option>
+                    <option value="Irrigation">💧 Irrigation</option>
+                    <option value="Weeding">🌿 Weeding</option>
+                    <option value="Fertilizing">🧪 Fertilizing</option>
+                    <option value="Spraying">💨 Spraying</option>
+                    <option value="Pruning">✂️ Pruning</option>
+                    <option value="Harvesting">🧺 Harvesting</option>
+                    <option value="Planting">🌱 Planting</option>
+                    <option value="Inspection">🔍 Inspection</option>
+                    <option value="Maintenance">🔧 Maintenance</option>
+                    <option value="Other">📋 Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="field_location">Field Location</label>
+                <input type="text" id="field_location" name="field_location" placeholder="e.g., Field A, Section 2">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="start_time">Start Time</label>
+                <input type="time" id="start_time" name="start_time">
+            </div>
+            <div class="form-group">
+                <label for="estimated_hours">Estimated Hours</label>
+                <input type="number" step="0.5" id="estimated_hours" name="estimated_hours" placeholder="2.5">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Task Description *</label>
+            <textarea id="description" name="description" required placeholder="Describe the task in detail..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn">Assign Task</button>
+    </form>
+</div>
+{% else %}
+<div style="padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; margin-bottom: 20px;">
+    <p><strong>ℹ️ Employee Access:</strong> You are viewing in read-only mode. Admin access is required to assign tasks.</p>
+</div>
+{% endif %}
+
+<h2 style="margin-top: 40px;">📅 Tasks by Employee</h2>
+
+{% for emp_num in range(1, 11) %}
+<div class="card" style="margin-bottom: 20px;">
+    <h3 style="color: #dc2626; margin-bottom: 15px;">👷 Employee {{ emp_num }}</h3>
+    
+    {% set emp_tasks = tasks|selectattr('employee_number', 'equalto', emp_num)|list %}
+    
+    {% if emp_tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Task Type</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Time</th>
+                <th>Hours</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in emp_tasks %}
+            <tr>
+                <td>{{ task.task_date }}</td>
+                <td>{{ task.task_type }}</td>
+                <td>{{ task.field_location or 'N/A' }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.start_time or 'N/A' }}</td>
+                <td>{{ task.estimated_hours or 'N/A' }}</td>
+                <td>
+                    <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;
+                        {% if task.status == 'Completed' %}background: #d1fae5; color: #065f46;
+                        {% elif task.status == 'In Progress' %}background: #fef3c7; color: #92400e;
+                        {% else %}background: #fee2e2; color: #991b1b;{% endif %}">
+                        {{ task.status }}
+                    </span>
+                </td>
+                <td>
+                    {% if session.get('user_type') == 'admin' %}
+                    <form method="POST" action="/employee_tasks/update_status/{{ task.id }}" style="display: inline; margin-right: 5px;">
+                        <select name="status" onchange="this.form.submit()" style="font-size: 12px; padding: 4px;">
+                            <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </form>
+                    <form method="POST" action="/employee_tasks/delete/{{ task.id }}" style="display: inline;">
+                        <button type="submit" class="btn-delete" onclick="return confirm('Delete this task?')">Delete</button>
+                    </form>
+                    {% else %}
+                    <span style="color: #999;">View Only</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state" style="padding: 20px; color: #999;">
+        No tasks assigned yet
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% endblock %}

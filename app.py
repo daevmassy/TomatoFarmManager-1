@@ -80,6 +80,23 @@ def init_db():
             sql_script = f.read()
         
         cursor.execute(sql_script)
+        
+        # Create employee_tasks table if it doesn't exist
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS employee_tasks (
+                id SERIAL PRIMARY KEY,
+                employee_number INTEGER NOT NULL CHECK (employee_number BETWEEN 1 AND 10),
+                task_date DATE NOT NULL,
+                task_type VARCHAR(100) NOT NULL,
+                field_location VARCHAR(200),
+                description TEXT NOT NULL,
+                start_time TIME,
+                estimated_hours DECIMAL(4,1),
+                status VARCHAR(50) DEFAULT 'Pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
         connection.commit()
         cursor.close()
         release_db_connection(connection)
@@ -663,6 +680,114 @@ def delete_sale(id):
             release_db_connection(connection)
     
     return redirect(url_for('sales'))
+
+@app.route('/employee_tasks')
+@login_required
+def employee_tasks():
+    connection = get_db_connection()
+    tasks = []
+    
+    if connection:
+        try:
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
+            cursor.execute("""
+                SELECT * FROM employee_tasks 
+                ORDER BY task_date DESC, employee_number ASC
+            """)
+            tasks = cursor.fetchall()
+            cursor.close()
+        except Exception as e:
+            print(f"Database error: {e}")
+        finally:
+            release_db_connection(connection)
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    return render_template('employee_tasks.html', tasks=tasks, today=today)
+
+@app.route('/employee_tasks/add', methods=['POST'])
+@admin_required
+def add_employee_task():
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            employee_number = int(request.form['employee_number'])
+            task_date = request.form['task_date']
+            task_type = request.form['task_type']
+            field_location = request.form.get('field_location', '')
+            description = request.form['description']
+            start_time = request.form.get('start_time', None)
+            if start_time == '':
+                start_time = None
+            estimated_hours = request.form.get('estimated_hours', None)
+            if estimated_hours == '':
+                estimated_hours = None
+            status = request.form.get('status', 'Pending')
+            
+            cursor = connection.cursor()
+            cursor.execute("""
+                INSERT INTO employee_tasks 
+                (employee_number, task_date, task_type, field_location, description, 
+                 start_time, estimated_hours, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (employee_number, task_date, task_type, field_location, description, 
+                  start_time, estimated_hours, status))
+            
+            connection.commit()
+            cursor.close()
+            flash(f'Task assigned to Employee {employee_number} successfully!', 'success')
+        except Exception as e:
+            print(f"Database error: {e}")
+            flash('Error assigning task', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return redirect(url_for('employee_tasks'))
+
+@app.route('/employee_tasks/update_status/<int:id>', methods=['POST'])
+@admin_required
+def update_task_status(id):
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            status = request.form['status']
+            cursor = connection.cursor()
+            cursor.execute("""
+                UPDATE employee_tasks 
+                SET status = %s 
+                WHERE id = %s
+            """, (status, id))
+            connection.commit()
+            cursor.close()
+            flash('Task status updated successfully!', 'success')
+        except Exception as e:
+            print(f"Database error: {e}")
+            flash('Error updating task status', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return redirect(url_for('employee_tasks'))
+
+@app.route('/employee_tasks/delete/<int:id>', methods=['POST'])
+@admin_required
+def delete_employee_task(id):
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM employee_tasks WHERE id = %s", (id,))
+            connection.commit()
+            cursor.close()
+            flash('Task deleted successfully!', 'success')
+        except Exception as e:
+            print(f"Database error: {e}")
+            flash('Error deleting task', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return redirect(url_for('employee_tasks'))
 
 if __name__ == '__main__':
     print("Initializing connection pool...")
