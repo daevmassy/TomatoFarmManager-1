@@ -107,8 +107,10 @@
                 <th>Task Type</th>
                 <th>Location</th>
                 <th>Description</th>
-                <th>Time</th>
-                <th>Hours</th>
+                <th>Scheduled</th>
+                <th>Est. Hours</th>
+                <th>Started</th>
+                <th>Finished</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -122,6 +124,20 @@
                 <td>{{ task.description }}</td>
                 <td>{{ task.start_time or 'N/A' }}</td>
                 <td>{{ task.estimated_hours or 'N/A' }}</td>
+                <td style="font-size: 11px;">
+                    {% if task.actual_start_time %}
+                        {{ task.actual_start_time.strftime('%I:%M %p') }}
+                    {% else %}
+                        <span style="color: #999;">-</span>
+                    {% endif %}
+                </td>
+                <td style="font-size: 11px;">
+                    {% if task.actual_finish_time %}
+                        {{ task.actual_finish_time.strftime('%I:%M %p') }}
+                    {% else %}
+                        <span style="color: #999;">-</span>
+                    {% endif %}
+                </td>
                 <td>
                     <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;
                         {% if task.status == 'Completed' %}background: #d1fae5; color: #065f46;
@@ -143,7 +159,19 @@
                         <button type="submit" class="btn-delete" onclick="return confirm('Delete this task?')">Delete</button>
                     </form>
                     {% else %}
-                    <span style="color: #999;">View Only</span>
+                    <div style="display: flex; gap: 5px;">
+                        {% if task.status == 'Pending' %}
+                        <form method="POST" action="/employee_tasks/start/{{ task.id }}" style="display: inline;">
+                            <button type="submit" class="btn" style="font-size: 11px; padding: 4px 8px; background: #22c55e;">Start</button>
+                        </form>
+                        {% elif task.status == 'In Progress' %}
+                        <form method="POST" action="/employee_tasks/finish/{{ task.id }}" style="display: inline;">
+                            <button type="submit" class="btn" style="font-size: 11px; padding: 4px 8px; background: #3b82f6;">Finish</button>
+                        </form>
+                        {% else %}
+                        <span style="color: #999; font-size: 11px;">Done</span>
+                        {% endif %}
+                    </div>
                     {% endif %}
                 </td>
             </tr>

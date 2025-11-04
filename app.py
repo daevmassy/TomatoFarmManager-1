@@ -93,8 +93,27 @@ def init_db():
                 start_time TIME,
                 estimated_hours DECIMAL(4,1),
                 status VARCHAR(50) DEFAULT 'Pending',
+                actual_start_time TIMESTAMP,
+                actual_finish_time TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
+        """)
+        
+        # Add new columns to existing table if they don't exist
+        cursor.execute("""
+            DO $$ 
+            BEGIN
+                BEGIN
+                    ALTER TABLE employee_tasks ADD COLUMN actual_start_time TIMESTAMP;
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+                BEGIN
+                    ALTER TABLE employee_tasks ADD COLUMN actual_finish_time TIMESTAMP;
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+            END $$;
         """)
         
         connection.commit()
@@ -764,6 +783,54 @@ def update_task_status(id):
         except Exception as e:
             print(f"Database error: {e}")
             flash('Error updating task status', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return redirect(url_for('employee_tasks'))
+
+@app.route('/employee_tasks/start/<int:id>', methods=['POST'])
+@login_required
+def start_task(id):
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("""
+                UPDATE employee_tasks 
+                SET status = 'In Progress', actual_start_time = CURRENT_TIMESTAMP 
+                WHERE id = %s
+            """, (id,))
+            connection.commit()
+            cursor.close()
+            flash('Task started successfully!', 'success')
+        except Exception as e:
+            print(f"Database error: {e}")
+            flash('Error starting task', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return redirect(url_for('employee_tasks'))
+
+@app.route('/employee_tasks/finish/<int:id>', methods=['POST'])
+@login_required
+def finish_task(id):
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("""
+                UPDATE employee_tasks 
+                SET status = 'Completed', actual_finish_time = CURRENT_TIMESTAMP 
+                WHERE id = %s
+            """, (id,))
+            connection.commit()
+            cursor.close()
+            flash('Task completed successfully!', 'success')
+        except Exception as e:
+            print(f"Database error: {e}")
+            flash('Error finishing task', 'error')
         finally:
             release_db_connection(connection)
     
