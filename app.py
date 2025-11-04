@@ -46,6 +46,8 @@ def init_db():
         print("Database initialized successfully!")
     except Error as e:
         print(f"Error initializing database: {e}")
+        print("Note: MySQL is not running. Please set up MySQL and run the application again.")
+        print("For local setup: Install MySQL, start the server, and update DB_CONFIG in app.py")
 
 @app.route('/')
 def index():
