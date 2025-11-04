@@ -241,6 +241,16 @@ body.light-theme .logout-btn:hover {
     font-size: 18px;
     transition: 0.4s;
     z-index: 2;
+    display: flex;
+    align-items: center;
+}
+
+.slider .sun svg,
+.slider .moon svg {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .slider:before {
