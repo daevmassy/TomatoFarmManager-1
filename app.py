@@ -129,8 +129,8 @@ def login_admin():
 @app.route('/login/guest', methods=['POST'])
 def login_guest():
     session['user_type'] = 'guest'
-    session['username'] = 'Guest'
-    flash('Welcome Guest! You have view-only access.', 'success')
+    session['username'] = 'Employee'
+    flash('Welcome Employee! You have view-only access.', 'success')
     return redirect(url_for('index'))
 
 @app.route('/register')
