@@ -155,13 +155,14 @@ header p {
     font-weight: 400;
 }
 
-.header-right {
+.header-left {
     position: absolute;
-    right: 40px;
+    left: 40px;
     top: 30px;
     display: flex;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
+    width: 180px;
 }
 
 .theme-toggle {

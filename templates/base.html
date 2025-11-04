@@ -11,17 +11,17 @@
     <div class="main-content">
         {% if session.get('user_type') %}
         <header>
-            <h1>Tomato Farm Management System</h1>
-            <p>Manage Your Tomato Farm Efficiently</p>
-            <div class="header-right">
-                <button id="themeToggle" onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 15px; font-weight: 600; transition: all 0.3s ease;">
-                    🌓 Theme
-                </button>
+            <div class="header-left">
                 <div class="user-info">
                     <span>{% if session.get('user_type') == 'admin' %}👨‍💼 Admin{% else %}👤 Employee{% endif %}: {{ session.get('username', 'User') }}</span>
                     <a href="/logout">Logout</a>
                 </div>
+                <button id="themeToggle" onclick="toggleTheme()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; width: 100%; margin-top: 10px;">
+                    🌓 Theme
+                </button>
             </div>
+            <h1>Tomato Farm Management System</h1>
+            <p>Manage Your Tomato Farm Efficiently</p>
         </header>
 
         <nav>
