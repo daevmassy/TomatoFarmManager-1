@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Operations - Tomato Farm Management System{% endblock %}
+
+{% block content %}
+<h2>⚙️ Farm Operations Management</h2>
+
+<form method="POST" action="/operations/add">
+    <div class="form-row">
+        <div class="form-group">
+            <label for="operation_type">Operation Type *</label>
+            <select id="operation_type" name="operation_type" required>
+                <option value="">Select Operation</option>
+                <option value="Spraying">Spraying/Pesticide Application</option>
+                <option value="Weeding">Weeding</option>
+                <option value="Irrigation">Irrigation</option>
+                <option value="Fertilizing">Fertilizing</option>
+                <option value="Pruning">Pruning</option>
+                <option value="Mulching">Mulching</option>
+                <option value="Staking">Staking</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="operation_date">Operation Date *</label>
+            <input type="date" id="operation_date" name="operation_date" required>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="field_location">Field Location</label>
+            <input type="text" id="field_location" name="field_location" placeholder="e.g., Field A, Section 2">
+        </div>
+        <div class="form-group">
+            <label for="performed_by">Performed By</label>
+            <input type="text" id="performed_by" name="performed_by" placeholder="Worker name">
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="cost">Cost ($)</label>
+            <input type="number" step="0.01" id="cost" name="cost" placeholder="0.00">
+        </div>
+        <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" required placeholder="Describe the operation..."></textarea>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="notes">Additional Notes</label>
+        <textarea id="notes" name="notes" placeholder="Any additional information..."></textarea>
+    </div>
+    
+    <button type="submit" class="btn">Record Operation</button>
+</form>
+
+<h2 style="margin-top: 40px;">📋 Operations History</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Cost</th>
+            <th>Performed By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for op in operations %}
+        <tr>
+            <td>{{ op.operation_date }}</td>
+            <td>{{ op.operation_type }}</td>
+            <td>{{ op.field_location or 'N/A' }}</td>
+            <td>{{ op.description }}</td>
+            <td>${{ op.cost }}</td>
+            <td>{{ op.performed_by or 'N/A' }}</td>
+            <td>
+                <form method="POST" action="/operations/delete/{{ op.id }}" style="display: inline;">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Delete this record?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" style="text-align: center;">No operations recorded yet</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

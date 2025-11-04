@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tomato Farm Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🍅 Tomato Farm Management System</h1>
+        <p>Manage Your Tomato Farm Efficiently</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">🏠 Home</a></li>
+                <li><a href="/planting" class="{{ 'active' if request.path == '/planting' else '' }}">🌱 Planting</a></li>
+                <li><a href="/harvesting" class="{{ 'active' if request.path == '/harvesting' else '' }}">🧺 Harvesting</a></li>
+                <li><a href="/inventory" class="{{ 'active' if request.path == '/inventory' else '' }}">📦 Inventory</a></li>
+                <li><a href="/operations" class="{{ 'active' if request.path == '/operations' else '' }}">⚙️ Operations</a></li>
+                <li><a href="/sales" class="{{ 'active' if request.path == '/sales' else '' }}">💰 Sales</a></li>
+            </ul>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Tomato Farm Management System | Manage Your Farm with Excellence</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

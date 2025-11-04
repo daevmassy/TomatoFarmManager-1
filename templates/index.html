@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Tomato Farm Management System{% endblock %}
+
+{% block content %}
+<h2>🏠 Dashboard</h2>
+<p>Welcome to the Tomato Farm Management System. Monitor and manage all aspects of your tomato farming operations.</p>
+
+<div class="dashboard-cards">
+    <div class="card">
+        <h3>🌱 Total Plants</h3>
+        <p>{{ stats.total_plants }}</p>
+    </div>
+    <div class="card">
+        <h3>🧺 Total Harvest</h3>
+        <p>{{ stats.total_harvest }} kg</p>
+    </div>
+    <div class="card">
+        <h3>📦 Inventory Items</h3>
+        <p>{{ stats.inventory_items }}</p>
+    </div>
+    <div class="card">
+        <h3>💰 Total Sales</h3>
+        <p>${{ stats.total_sales }}</p>
+    </div>
+</div>
+
+<h2 style="margin-top: 40px;">📊 Recent Activity</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Activity Type</th>
+            <th>Date</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in recent_activities %}
+        <tr>
+            <td>{{ activity.type }}</td>
+            <td>{{ activity.date }}</td>
+            <td>{{ activity.details }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3" style="text-align: center;">No recent activities</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
