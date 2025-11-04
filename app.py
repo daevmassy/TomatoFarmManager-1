@@ -231,43 +231,6 @@ def register_user():
             release_db_connection(connection)
         return redirect(url_for('register'))
 
-@app.route('/upgrade_to_admin', methods=['POST'])
-def upgrade_to_admin():
-    if session.get('user_type') != 'guest':
-        flash('You are already logged in as admin.', 'info')
-        return redirect(url_for('index'))
-    
-    admin_email = request.form.get('admin_email', '').strip()
-    admin_password = request.form.get('admin_password', '')
-    
-    connection = get_db_connection()
-    if not connection:
-        flash('Database connection error. Please try again.', 'error')
-        return redirect(url_for('index'))
-    
-    try:
-        cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
-        cursor.execute("SELECT * FROM users WHERE email = %s", (admin_email,))
-        user = cursor.fetchone()
-        cursor.close()
-        
-        if user and user['password'] == admin_password:
-            session['user_type'] = 'admin'
-            session['username'] = user['full_name'] or 'Admin'
-            session['user_email'] = user['email']
-            flash(f'Successfully upgraded to Admin access! Welcome {session["username"]}.', 'success')
-            release_db_connection(connection)
-            return redirect(url_for('index'))
-        else:
-            flash('Invalid admin credentials. Please try again.', 'error')
-            release_db_connection(connection)
-            return redirect(url_for('index'))
-    except Exception as e:
-        print(f"Upgrade error: {e}")
-        flash('Error during upgrade. Please try again.', 'error')
-        release_db_connection(connection)
-        return redirect(url_for('index'))
-
 @app.route('/logout')
 def logout():
     session.clear()

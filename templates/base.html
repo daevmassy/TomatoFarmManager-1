@@ -19,9 +19,6 @@
                 </button>
                 <div class="user-info">
                     <span>{% if session.get('user_type') == 'admin' %}👨‍💼 Admin{% else %}👤 Employee{% endif %}: {{ session.get('username', 'User') }}</span>
-                    {% if session.get('user_type') == 'guest' %}
-                    <a href="#" onclick="showAdminUpgrade(); return false;" style="background: #4CAF50;">Upgrade to Admin</a>
-                    {% endif %}
                     <a href="/logout">Logout</a>
                 </div>
             </div>
@@ -62,36 +59,8 @@
         </div>
     </div>
 
-    <!-- Admin Upgrade Modal -->
-    <div id="adminUpgradeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
-            <h3 style="color: #dc2626; margin-bottom: 20px;">Upgrade to Admin Access</h3>
-            <form method="POST" action="/upgrade_to_admin">
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Admin Email:</label>
-                    <input type="email" name="admin_email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Admin Password:</label>
-                    <input type="password" name="admin_password" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" style="flex: 1; padding: 12px; background: #dc2626; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Upgrade</button>
-                    <button type="button" onclick="hideAdminUpgrade()" style="flex: 1; padding: 12px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
-        function showAdminUpgrade() {
-            document.getElementById('adminUpgradeModal').style.display = 'flex';
-        }
-        function hideAdminUpgrade() {
-            document.getElementById('adminUpgradeModal').style.display = 'none';
-        }
-        
         // Theme Toggle Functionality
         function toggleTheme() {
             const body = document.body;
