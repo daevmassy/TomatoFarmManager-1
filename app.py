@@ -133,6 +133,68 @@ def login_guest():
     flash('Welcome Guest! You have view-only access.', 'success')
     return redirect(url_for('index'))
 
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def register_user():
+    full_name = request.form.get('full_name', '').strip()
+    email = request.form.get('email', '').strip().lower()
+    password = request.form.get('password', '')
+    confirm_password = request.form.get('confirm_password', '')
+    
+    # Validation
+    if not full_name or not email or not password:
+        flash('All fields are required.', 'error')
+        return redirect(url_for('register'))
+    
+    if password != confirm_password:
+        flash('Passwords do not match.', 'error')
+        return redirect(url_for('register'))
+    
+    if len(password) < 6:
+        flash('Password must be at least 6 characters long.', 'error')
+        return redirect(url_for('register'))
+    
+    connection = get_db_connection()
+    if not connection:
+        flash('Database connection error. Please try again.', 'error')
+        return redirect(url_for('register'))
+    
+    try:
+        cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
+        
+        # Check if email already exists
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            flash('An account with this email already exists. Please login.', 'error')
+            cursor.close()
+            release_db_connection(connection)
+            return redirect(url_for('login'))
+        
+        # Insert new user
+        cursor.execute("""
+            INSERT INTO users (email, password, full_name) 
+            VALUES (%s, %s, %s)
+        """, (email, password, full_name))
+        
+        connection.commit()
+        cursor.close()
+        release_db_connection(connection)
+        
+        flash('Account created successfully! Please login.', 'success')
+        return redirect(url_for('login'))
+        
+    except Exception as e:
+        print(f"Registration error: {e}")
+        flash('Error creating account. Please try again.', 'error')
+        if connection:
+            release_db_connection(connection)
+        return redirect(url_for('register'))
+
 @app.route('/logout')
 def logout():
     session.clear()

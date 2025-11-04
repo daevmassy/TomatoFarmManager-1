@@ -1,0 +1,46 @@
+
+{% extends "base.html" %}
+
+{% block title %}Register - Tomato Farm Management System{% endblock %}
+
+{% block page_title %}{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2 style="text-align: center; margin-bottom: 32px;">📝 Create New Account</h2>
+    <p style="text-align: center; color: #888; margin-bottom: 40px;">Register for admin access to the system</p>
+
+    <div class="login-card">
+        <form method="POST" action="/register">
+            <h3>👨‍💼 Admin Registration</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Fill in your details to create an account</p>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="full_name">Full Name *</label>
+                <input type="text" id="full_name" name="full_name" required placeholder="Enter your full name" style="width: 100%; padding: 10px; font-size: 16px;">
+            </div>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email" style="width: 100%; padding: 10px; font-size: 16px;">
+            </div>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required placeholder="Enter password" style="width: 100%; padding: 10px; font-size: 16px;">
+            </div>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="confirm_password">Confirm Password *</label>
+                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Re-enter password" style="width: 100%; padding: 10px; font-size: 16px;">
+            </div>
+            
+            <button type="submit" class="btn" style="width: 100%; padding: 12px; font-size: 16px; margin-top: 10px;">Create Account</button>
+        </form>
+
+        <div style="margin: 30px 0; text-align: center;">
+            <p style="color: #888;">Already have an account? <a href="/login" style="color: #22c55e; text-decoration: none; font-weight: 600;">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
