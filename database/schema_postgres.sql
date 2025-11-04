@@ -116,6 +116,11 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Insert default admin user (email: admin@daevtech.com, password: admin123)
+INSERT INTO users (email, password, full_name) 
+VALUES ('admin@daevtech.com', 'admin123', 'Admin User')
+ON CONFLICT (email) DO NOTHING;
+
 -- Insert sample inventory data
 INSERT INTO inventory (item_name, category, quantity, unit, min_quantity, supplier) VALUES
 ('Tomato Seeds - Roma', 'Seeds', 50, 'packets', 10, 'AgriSupply Co'),
