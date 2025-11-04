@@ -856,6 +856,165 @@ def delete_employee_task(id):
     
     return redirect(url_for('employee_tasks'))
 
+@app.route('/reports')
+@login_required
+def reports():
+    connection = get_db_connection()
+    
+    # Initialize all report data
+    production = {
+        'total_plants': 0,
+        'active_plants': 0,
+        'total_harvest': 0,
+        'avg_harvest_per_plant': 0
+    }
+    
+    financial = {
+        'total_sales': 0,
+        'total_operations_cost': 0,
+        'net_income': 0,
+        'pending_payments': 0
+    }
+    
+    quality_distribution = []
+    operations_summary = []
+    field_performance = []
+    employee_summary = []
+    monthly_sales = []
+    inventory = {'total_items': 0, 'low_stock': 0}
+    low_stock_items = []
+    
+    if connection:
+        try:
+            cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
+            
+            # Production Summary
+            cursor.execute("SELECT COUNT(*) as count FROM tomato_plants")
+            result = cursor.fetchone()
+            production['total_plants'] = result['count'] if result else 0
+            
+            cursor.execute("SELECT COUNT(*) as count FROM tomato_plants WHERE status = 'Growing'")
+            result = cursor.fetchone()
+            production['active_plants'] = result['count'] if result else 0
+            
+            cursor.execute("SELECT COALESCE(SUM(quantity), 0) as total FROM harvest WHERE unit = 'kg'")
+            result = cursor.fetchone()
+            production['total_harvest'] = float(result['total']) if result else 0
+            
+            if production['total_plants'] > 0:
+                production['avg_harvest_per_plant'] = production['total_harvest'] / production['total_plants']
+            
+            # Financial Summary
+            cursor.execute("SELECT COALESCE(SUM(total_amount), 0) as total FROM sales")
+            result = cursor.fetchone()
+            financial['total_sales'] = float(result['total']) if result else 0
+            
+            cursor.execute("SELECT COALESCE(SUM(cost), 0) as total FROM operations")
+            result = cursor.fetchone()
+            financial['total_operations_cost'] = float(result['total']) if result else 0
+            
+            financial['net_income'] = financial['total_sales'] - financial['total_operations_cost']
+            
+            cursor.execute("SELECT COALESCE(SUM(total_amount), 0) as total FROM sales WHERE payment_status = 'Pending'")
+            result = cursor.fetchone()
+            financial['pending_payments'] = float(result['total']) if result else 0
+            
+            # Quality Distribution
+            cursor.execute("""
+                SELECT quality_grade, 
+                       SUM(quantity) as total_quantity,
+                       (SUM(quantity) * 100.0 / NULLIF((SELECT SUM(quantity) FROM harvest WHERE unit = 'kg'), 0)) as percentage
+                FROM harvest 
+                WHERE unit = 'kg'
+                GROUP BY quality_grade
+                ORDER BY total_quantity DESC
+            """)
+            quality_distribution = cursor.fetchall()
+            
+            # Operations Summary
+            cursor.execute("""
+                SELECT operation_type, 
+                       COUNT(*) as count,
+                       COALESCE(SUM(cost), 0) as total_cost
+                FROM operations
+                GROUP BY operation_type
+                ORDER BY count DESC
+            """)
+            operations_summary = cursor.fetchall()
+            
+            # Field Performance
+            cursor.execute("""
+                SELECT p.field_location,
+                       COUNT(p.id) as plant_count,
+                       COALESCE(SUM(h.quantity), 0) as total_harvest
+                FROM tomato_plants p
+                LEFT JOIN harvest h ON p.id = h.plant_id AND h.unit = 'kg'
+                WHERE p.field_location IS NOT NULL AND p.field_location != ''
+                GROUP BY p.field_location
+                ORDER BY total_harvest DESC
+            """)
+            field_performance = cursor.fetchall()
+            
+            # Employee Summary
+            cursor.execute("""
+                SELECT employee_number,
+                       COUNT(*) as total_tasks,
+                       SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed,
+                       SUM(CASE WHEN status = 'In Progress' THEN 1 ELSE 0 END) as in_progress,
+                       SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending
+                FROM employee_tasks
+                GROUP BY employee_number
+                ORDER BY employee_number
+            """)
+            employee_summary = cursor.fetchall()
+            
+            # Monthly Sales Trend
+            cursor.execute("""
+                SELECT TO_CHAR(sale_date, 'YYYY-MM') as month,
+                       SUM(total_amount) as total_sales,
+                       SUM(quantity) as total_quantity
+                FROM sales
+                WHERE sale_date >= CURRENT_DATE - INTERVAL '6 months'
+                GROUP BY TO_CHAR(sale_date, 'YYYY-MM')
+                ORDER BY month DESC
+            """)
+            monthly_sales = cursor.fetchall()
+            
+            # Inventory Status
+            cursor.execute("SELECT COUNT(*) as count FROM inventory")
+            result = cursor.fetchone()
+            inventory['total_items'] = result['count'] if result else 0
+            
+            cursor.execute("SELECT COUNT(*) as count FROM inventory WHERE quantity <= min_quantity")
+            result = cursor.fetchone()
+            inventory['low_stock'] = result['count'] if result else 0
+            
+            cursor.execute("""
+                SELECT item_name, quantity, unit, min_quantity
+                FROM inventory
+                WHERE quantity <= min_quantity
+                ORDER BY (quantity - min_quantity)
+            """)
+            low_stock_items = cursor.fetchall()
+            
+            cursor.close()
+        except Exception as e:
+            print(f"Database error in reports: {e}")
+            flash('Error loading some report data', 'error')
+        finally:
+            release_db_connection(connection)
+    
+    return render_template('reports.html',
+                         production=production,
+                         financial=financial,
+                         quality_distribution=quality_distribution,
+                         operations_summary=operations_summary,
+                         field_performance=field_performance,
+                         employee_summary=employee_summary,
+                         monthly_sales=monthly_sales,
+                         inventory=inventory,
+                         low_stock_items=low_stock_items)
+
 if __name__ == '__main__':
     print("Initializing connection pool...")
     init_pool()
