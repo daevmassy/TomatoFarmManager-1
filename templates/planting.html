@@ -10,26 +10,26 @@
     <div class="form-row">
         <div class="form-group">
             <label for="variety">Tomato Variety *</label>
-            <select id="variety" name="variety" required>
+            <select id="variety" name="variety" required onchange="calculateHarvestDate()">
                 <option value="">Select Variety</option>
-                <option value="Roma">Roma</option>
-                <option value="Cherry">Cherry</option>
-                <option value="Beefsteak">Beefsteak</option>
-                <option value="Heirloom">Heirloom</option>
-                <option value="Plum">Plum</option>
-                <option value="Grape">Grape</option>
+                <option value="Roma" data-days="75">Roma (75 days)</option>
+                <option value="Cherry" data-days="60">Cherry (60 days)</option>
+                <option value="Beefsteak" data-days="85">Beefsteak (85 days)</option>
+                <option value="Heirloom" data-days="80">Heirloom (80 days)</option>
+                <option value="Plum" data-days="70">Plum (70 days)</option>
+                <option value="Grape" data-days="65">Grape (65 days)</option>
             </select>
         </div>
         <div class="form-group">
             <label for="planting_date">Planting Date *</label>
-            <input type="date" id="planting_date" name="planting_date" required>
+            <input type="date" id="planting_date" name="planting_date" required onchange="calculateHarvestDate()">
         </div>
     </div>
     
     <div class="form-row">
         <div class="form-group">
-            <label for="expected_harvest">Expected Harvest Date</label>
-            <input type="date" id="expected_harvest" name="expected_harvest">
+            <label for="expected_harvest">Expected Harvest Date (Auto-calculated)</label>
+            <input type="date" id="expected_harvest" name="expected_harvest" readonly style="background-color: #f0f0f0;">
         </div>
         <div class="form-group">
             <label for="field_location">Field Location</label>
