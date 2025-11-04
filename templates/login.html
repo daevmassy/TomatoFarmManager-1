@@ -1,0 +1,29 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login - Tomato Farm Management System{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 50px auto; text-align: center;">
+    <h2>🔐 Login to Tomato Farm Management System</h2>
+    <p>Choose your access level</p>
+
+    <div style="margin-top: 40px;">
+        <form method="POST" action="/login/admin" style="margin-bottom: 30px; padding: 30px; background: rgba(255,255,255,0.9); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3>👨‍💼 Admin Access</h3>
+            <p style="font-size: 14px; color: #666;">Full access with inventory management</p>
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required placeholder="Enter admin password" style="width: 100%; padding: 10px; font-size: 16px;">
+            </div>
+            <button type="submit" class="btn" style="width: 100%; padding: 12px; font-size: 16px;">Login as Admin</button>
+        </form>
+
+        <form method="POST" action="/login/guest" style="padding: 30px; background: rgba(255,255,255,0.9); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3>👤 Guest Access</h3>
+            <p style="font-size: 14px; color: #666;">View-only access, no password required</p>
+            <button type="submit" class="btn" style="width: 100%; padding: 12px; font-size: 16px; background: #4CAF50;">Continue as Guest</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

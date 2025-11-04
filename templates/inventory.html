@@ -5,6 +5,7 @@
 {% block content %}
 <h2>📦 Inventory Management</h2>
 
+{% if session.get('user_type') == 'admin' %}
 <form method="POST" action="/inventory/add">
     <div class="form-row">
         <div class="form-group">
@@ -55,6 +56,11 @@
     
     <button type="submit" class="btn">Add Inventory Item</button>
 </form>
+{% else %}
+<div style="padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; margin-bottom: 20px;">
+    <p><strong>ℹ️ Guest Access:</strong> You are viewing in read-only mode. Admin access is required to add or modify inventory.</p>
+</div>
+{% endif %}
 
 <h2 style="margin-top: 40px;">📋 Current Inventory</h2>
 <table>
@@ -79,9 +85,13 @@
             <td>{{ item.supplier or 'N/A' }}</td>
             <td>{{ item.last_updated }}</td>
             <td>
+                {% if session.get('user_type') == 'admin' %}
                 <form method="POST" action="/inventory/delete/{{ item.id }}" style="display: inline;">
                     <button type="submit" class="btn-delete" onclick="return confirm('Delete this item?')">Delete</button>
                 </form>
+                {% else %}
+                <span style="color: #999;">View Only</span>
+                {% endif %}
             </td>
         </tr>
         {% else %}

@@ -10,6 +10,14 @@
     <header>
         <h1>🍅 Tomato Farm Management System</h1>
         <p>Manage Your Tomato Farm Efficiently</p>
+        {% if session.get('user_type') %}
+        <div style="position: absolute; top: 20px; right: 20px; color: white;">
+            <span style="background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 20px; margin-right: 10px;">
+                {% if session.get('user_type') == 'admin' %}👨‍💼{% else %}👤{% endif %} {{ session.get('username', 'User') }}
+            </span>
+            <a href="/logout" style="background: #f44336; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none;">Logout</a>
+        </div>
+        {% endif %}
     </header>
 
     <div class="container">

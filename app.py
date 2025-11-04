@@ -1,13 +1,40 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import pool, extras
 from datetime import datetime, timedelta
 import os
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'tomato-farm-secret-key-2025')
 CORS(app)
+
+# Admin password - change this to your desired password
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+
+# Decorator to check if user is logged in
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_type' not in session:
+            flash('Please login to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Decorator to check if user is admin
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_type' not in session:
+            flash('Please login to access this page', 'error')
+            return redirect(url_for('login'))
+        if session['user_type'] != 'admin':
+            flash('Admin access required for this action', 'error')
+            return redirect(request.referrer or url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
@@ -63,7 +90,37 @@ def init_db():
         if connection:
             release_db_connection(connection)
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/login/admin', methods=['POST'])
+def login_admin():
+    password = request.form.get('password', '')
+    if password == ADMIN_PASSWORD:
+        session['user_type'] = 'admin'
+        session['username'] = 'Admin'
+        flash('Welcome Admin! You have full access.', 'success')
+        return redirect(url_for('index'))
+    else:
+        flash('Incorrect password. Please try again.', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/login/guest', methods=['POST'])
+def login_guest():
+    session['user_type'] = 'guest'
+    session['username'] = 'Guest'
+    flash('Welcome Guest! You have view-only access.', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out successfully.', 'success')
+    return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def index():
     connection = get_db_connection()
     stats = {
@@ -114,6 +171,7 @@ def index():
     return render_template('index.html', stats=stats, recent_activities=recent_activities)
 
 @app.route('/planting')
+@login_required
 def planting():
     connection = get_db_connection()
     plants = []
@@ -135,6 +193,7 @@ def planting():
     return render_template('planting.html', plants=plants)
 
 @app.route('/planting/add', methods=['POST'])
+@admin_required
 def add_planting():
     connection = get_db_connection()
     
@@ -167,6 +226,7 @@ def add_planting():
     return redirect(url_for('planting'))
 
 @app.route('/planting/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_planting(id):
     connection = get_db_connection()
     
@@ -186,6 +246,7 @@ def delete_planting(id):
     return redirect(url_for('planting'))
 
 @app.route('/harvesting')
+@login_required
 def harvesting():
     connection = get_db_connection()
     harvests = []
@@ -215,6 +276,7 @@ def harvesting():
     return render_template('harvesting.html', harvests=harvests, plants=plants)
 
 @app.route('/harvesting/add', methods=['POST'])
+@admin_required
 def add_harvest():
     connection = get_db_connection()
     
@@ -248,6 +310,7 @@ def add_harvest():
     return redirect(url_for('harvesting'))
 
 @app.route('/harvesting/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_harvest(id):
     connection = get_db_connection()
     
@@ -267,6 +330,7 @@ def delete_harvest(id):
     return redirect(url_for('harvesting'))
 
 @app.route('/inventory')
+@login_required
 def inventory():
     connection = get_db_connection()
     items = []
@@ -285,6 +349,7 @@ def inventory():
     return render_template('inventory.html', inventory=items)
 
 @app.route('/inventory/add', methods=['POST'])
+@admin_required
 def add_inventory():
     connection = get_db_connection()
     
@@ -316,6 +381,7 @@ def add_inventory():
     return redirect(url_for('inventory'))
 
 @app.route('/inventory/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_inventory(id):
     connection = get_db_connection()
     
@@ -335,6 +401,7 @@ def delete_inventory(id):
     return redirect(url_for('inventory'))
 
 @app.route('/operations')
+@login_required
 def operations():
     connection = get_db_connection()
     ops = []
@@ -353,6 +420,7 @@ def operations():
     return render_template('operations.html', operations=ops)
 
 @app.route('/operations/add', methods=['POST'])
+@admin_required
 def add_operation():
     connection = get_db_connection()
     
@@ -385,6 +453,7 @@ def add_operation():
     return redirect(url_for('operations'))
 
 @app.route('/operations/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_operation(id):
     connection = get_db_connection()
     
@@ -404,6 +473,7 @@ def delete_operation(id):
     return redirect(url_for('operations'))
 
 @app.route('/sales')
+@login_required
 def sales():
     connection = get_db_connection()
     sale_records = []
@@ -422,6 +492,7 @@ def sales():
     return render_template('sales.html', sales=sale_records)
 
 @app.route('/sales/add', methods=['POST'])
+@admin_required
 def add_sale():
     connection = get_db_connection()
     
@@ -455,6 +526,7 @@ def add_sale():
     return redirect(url_for('sales'))
 
 @app.route('/sales/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_sale(id):
     connection = get_db_connection()
     
