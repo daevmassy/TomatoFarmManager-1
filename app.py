@@ -195,14 +195,26 @@ def index():
 def planting():
     connection = get_db_connection()
     plants = []
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_items = 0
     
     if connection:
         try:
             cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
+            
+            # Get total count
+            cursor.execute("SELECT COUNT(*) as count FROM tomato_plants")
+            result = cursor.fetchone()
+            total_items = result['count'] if result else 0
+            
+            # Get paginated items
+            offset = (page - 1) * per_page
             cursor.execute("""
                 SELECT * FROM tomato_plants 
                 ORDER BY planting_date DESC
-            """)
+                LIMIT %s OFFSET %s
+            """, (per_page, offset))
             plants = cursor.fetchall()
             cursor.close()
         except Exception as e:
@@ -210,7 +222,8 @@ def planting():
         finally:
             release_db_connection(connection)
     
-    return render_template('planting.html', plants=plants)
+    total_pages = (total_items + per_page - 1) // per_page
+    return render_template('planting.html', plants=plants, page=page, total_pages=total_pages)
 
 @app.route('/planting/add', methods=['POST'])
 @admin_required
@@ -271,17 +284,28 @@ def harvesting():
     connection = get_db_connection()
     harvests = []
     plants = []
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_items = 0
     
     if connection:
         try:
             cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
             
+            # Get total count
+            cursor.execute("SELECT COUNT(*) as count FROM harvest")
+            result = cursor.fetchone()
+            total_items = result['count'] if result else 0
+            
+            # Get paginated harvests
+            offset = (page - 1) * per_page
             cursor.execute("""
                 SELECT h.*, p.variety as plant_variety
                 FROM harvest h
                 LEFT JOIN tomato_plants p ON h.plant_id = p.id
                 ORDER BY h.harvest_date DESC
-            """)
+                LIMIT %s OFFSET %s
+            """, (per_page, offset))
             harvests = cursor.fetchall()
             
             cursor.execute("SELECT * FROM tomato_plants ORDER BY planting_date DESC")
@@ -293,7 +317,8 @@ def harvesting():
         finally:
             release_db_connection(connection)
     
-    return render_template('harvesting.html', harvests=harvests, plants=plants)
+    total_pages = (total_items + per_page - 1) // per_page
+    return render_template('harvesting.html', harvests=harvests, plants=plants, page=page, total_pages=total_pages)
 
 @app.route('/harvesting/add', methods=['POST'])
 @admin_required
@@ -354,11 +379,22 @@ def delete_harvest(id):
 def inventory():
     connection = get_db_connection()
     items = []
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_items = 0
     
     if connection:
         try:
             cursor = connection.cursor(cursor_factory=extras.RealDictCursor)
-            cursor.execute("SELECT * FROM inventory ORDER BY item_name")
+            
+            # Get total count
+            cursor.execute("SELECT COUNT(*) as count FROM inventory")
+            result = cursor.fetchone()
+            total_items = result['count'] if result else 0
+            
+            # Get paginated items
+            offset = (page - 1) * per_page
+            cursor.execute("SELECT * FROM inventory ORDER BY item_name LIMIT %s OFFSET %s", (per_page, offset))
             items = cursor.fetchall()
             cursor.close()
         except Exception as e:
@@ -366,7 +402,8 @@ def inventory():
         finally:
             release_db_connection(connection)
     
-    return render_template('inventory.html', inventory=items)
+    total_pages = (total_items + per_page - 1) // per_page
+    return render_template('inventory.html', inventory=items, page=page, total_pages=total_pages)
 
 @app.route('/inventory/add', methods=['POST'])
 @admin_required

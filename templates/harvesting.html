@@ -93,4 +93,18 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if total_pages > 1 %}
+<div class="pagination">
+    {% if page > 1 %}
+    <a href="?page={{ page - 1 }}" class="pagination-btn">← Previous</a>
+    {% endif %}
+    
+    <span class="pagination-info">Page {{ page }} of {{ total_pages }}</span>
+    
+    {% if page < total_pages %}
+    <a href="?page={{ page + 1 }}" class="pagination-btn">Next →</a>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}
