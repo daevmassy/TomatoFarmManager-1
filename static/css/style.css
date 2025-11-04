@@ -165,6 +165,42 @@ header p {
     width: 180px;
 }
 
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-2px);
+}
+
+.logout-btn svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+body.light-theme .logout-btn {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+body.light-theme .logout-btn:hover {
+    background: rgba(220, 38, 38, 0.2);
+}
+
 /* Theme Toggle Switch */
 .theme-toggle-container {
     margin-top: 10px;
