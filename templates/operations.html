@@ -5,6 +5,7 @@
 {% block content %}
 <h2>⚙️ Farm Operations Management</h2>
 
+{% if session.get('user_type') == 'admin' %}
 <form method="POST" action="/operations/add">
     <div class="form-row">
         <div class="form-group">
@@ -56,6 +57,11 @@
     
     <button type="submit" class="btn">Record Operation</button>
 </form>
+{% else %}
+<div style="padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; margin-bottom: 20px;">
+    <p><strong>ℹ️ Guest Access:</strong> You are viewing in read-only mode. Admin access is required to add or modify operations records.</p>
+</div>
+{% endif %}
 
 <h2 style="margin-top: 40px;">📋 Operations History</h2>
 <table>
@@ -80,9 +86,13 @@
             <td>${{ op.cost }}</td>
             <td>{{ op.performed_by or 'N/A' }}</td>
             <td>
+                {% if session.get('user_type') == 'admin' %}
                 <form method="POST" action="/operations/delete/{{ op.id }}" style="display: inline;">
                     <button type="submit" class="btn-delete" onclick="return confirm('Delete this record?')">Delete</button>
                 </form>
+                {% else %}
+                <span style="color: #999;">View Only</span>
+                {% endif %}
             </td>
         </tr>
         {% else %}
