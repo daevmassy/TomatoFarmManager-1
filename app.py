@@ -60,6 +60,9 @@ def index():
     }
     recent_activities = []
     
+    if not connection:
+        flash('Database not connected. Please set up MySQL and import the schema. See MYSQL_SETUP.md for instructions.', 'error')
+    
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
