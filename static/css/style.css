@@ -200,11 +200,15 @@ body.light-theme .logout-btn:hover {
     background: rgba(220, 38, 38, 0.2);
 }
 
-/* Theme Toggle Switch */
-.theme-toggle-container {
+/* Controls Group */
+.controls-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-top: 10px;
 }
 
+/* Theme Toggle Switch */
 .theme-switch {
     position: relative;
     display: inline-block;
@@ -261,6 +265,42 @@ body.light-theme .slider {
 body.light-theme .slider:before {
     transform: translateX(24px);
     background-color: #2563eb;
+}
+
+/* Help Button */
+.help-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.help-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: white;
+}
+
+.help-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+body.light-theme .help-btn {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+body.light-theme .help-btn:hover {
+    background: rgba(37, 99, 235, 0.2);
 }
 
 .user-info {

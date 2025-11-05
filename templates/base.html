@@ -20,11 +20,18 @@
                     </svg>
                     <span>{{ session.get('username', 'User') }}</span>
                 </a>
-                <div class="theme-toggle-container">
+                <div class="controls-group">
                     <label class="theme-switch">
                         <input type="checkbox" id="themeToggle" onclick="toggleTheme()">
                         <span class="slider"></span>
                     </label>
+                    <a href="/help" class="help-btn" title="Help & User Guide">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </a>
                 </div>
             </div>
             <h1>Tomato Farm Management System</h1>
@@ -41,7 +48,6 @@
                 <li><a href="/sales" class="{{ 'active' if request.path == '/sales' else '' }}">💰 Sales</a></li>
                 <li><a href="/employee_tasks" class="{{ 'active' if request.path == '/employee_tasks' else '' }}">👷 Employee Tasks</a></li>
                 <li><a href="/reports" class="{{ 'active' if request.path == '/reports' else '' }}">📊 Reports</a></li>
-                <li><a href="/help" class="{{ 'active' if request.path == '/help' else '' }}">❓ Help</a></li>
             </ul>
         </nav>
         {% endif %}
