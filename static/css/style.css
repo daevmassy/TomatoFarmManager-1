@@ -198,7 +198,7 @@ header h1 {
 }
 
 header h1::before {
-    content: '🍅';
+    content: '';
     font-size: 1.3em;
 }
 
