@@ -167,37 +167,39 @@ header p {
 .logout-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 8px;
     color: white;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 13px;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .logout-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateX(-2px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: white;
 }
 
 .logout-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
 }
 
 body.light-theme .logout-btn {
-    background: rgba(220, 38, 38, 0.1);
-    color: #dc2626;
-    border-color: #dc2626;
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+    border-color: #2563eb;
 }
 
 body.light-theme .logout-btn:hover {
-    background: rgba(220, 38, 38, 0.2);
+    background: rgba(37, 99, 235, 0.2);
 }
 
 /* Theme Toggle Switch */
