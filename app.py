@@ -856,6 +856,11 @@ def delete_employee_task(id):
     
     return redirect(url_for('employee_tasks'))
 
+@app.route('/help')
+@login_required
+def help():
+    return render_template('help.html')
+
 @app.route('/reports')
 @login_required
 def reports():

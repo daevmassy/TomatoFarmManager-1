@@ -1,0 +1,280 @@
+
+{% extends "base.html" %}
+
+{% block title %}Help & User Guide - Tomato Farm Management System{% endblock %}
+
+{% block content %}
+<div class="help-container">
+    <h2>📚 User Guide & Help</h2>
+    <p class="help-intro">Welcome to the Tomato Farm Management System! This guide will help you understand and use all features effectively.</p>
+
+    <!-- Quick Start Section -->
+    <div class="help-section">
+        <h3>🚀 Quick Start</h3>
+        <div class="help-content">
+            <h4>Getting Started</h4>
+            <ol>
+                <li><strong>Login:</strong> Use your admin credentials or login as a guest employee</li>
+                <li><strong>Navigation:</strong> Use the menu bar to access different modules</li>
+                <li><strong>Theme:</strong> Toggle between light and dark themes using the switch in the header</li>
+                <li><strong>Admin vs Guest:</strong> Admins can add/edit/delete records, guests can only view</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Home Dashboard -->
+    <div class="help-section">
+        <h3>🏠 Home Dashboard</h3>
+        <div class="help-content">
+            <h4>Overview</h4>
+            <p>The dashboard provides a quick snapshot of your farm's key metrics:</p>
+            <ul>
+                <li><strong>Total Plants:</strong> Number of tomato plants registered</li>
+                <li><strong>Total Harvest:</strong> Cumulative harvest in kilograms</li>
+                <li><strong>Inventory Items:</strong> Count of tracked inventory items</li>
+                <li><strong>Total Sales:</strong> Revenue from all sales transactions</li>
+            </ul>
+            <p>Recent activities are displayed at the bottom for quick reference.</p>
+        </div>
+    </div>
+
+    <!-- Planting Module -->
+    <div class="help-section">
+        <h3>🌱 Planting</h3>
+        <div class="help-content">
+            <h4>Managing Your Plants</h4>
+            <p><strong>Add New Planting:</strong></p>
+            <ol>
+                <li>Click the "Add New Planting" section</li>
+                <li>Enter variety (e.g., Cherry, Roma, Beefsteak)</li>
+                <li>Set planting date and expected harvest date</li>
+                <li>Specify field location and quantity</li>
+                <li>Select status (Growing, Harvested, Removed)</li>
+                <li>Add optional notes</li>
+                <li>Click "Add Planting" button</li>
+            </ol>
+            <p><strong>Tips:</strong></p>
+            <ul>
+                <li>Use clear field location names for easy tracking</li>
+                <li>Expected harvest date helps with planning</li>
+                <li>Update status regularly to keep records accurate</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Harvesting Module -->
+    <div class="help-section">
+        <h3>🧺 Harvesting</h3>
+        <div class="help-content">
+            <h4>Recording Harvest Data</h4>
+            <p><strong>Add Harvest Record:</strong></p>
+            <ol>
+                <li>Select the plant (optional - can be general harvest)</li>
+                <li>Enter harvest date</li>
+                <li>Input quantity and select unit (kg/tons)</li>
+                <li>Choose quality grade (Grade A, B, or C)</li>
+                <li>Add notes about harvest conditions</li>
+                <li>Submit the record</li>
+            </ol>
+            <p><strong>Quality Grades:</strong></p>
+            <ul>
+                <li><strong>Grade A:</strong> Premium quality, best for retail</li>
+                <li><strong>Grade B:</strong> Good quality, standard retail</li>
+                <li><strong>Grade C:</strong> Processing grade, for sauces/products</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Inventory Module -->
+    <div class="help-section">
+        <h3>📦 Inventory</h3>
+        <div class="help-content">
+            <h4>Managing Supplies & Equipment</h4>
+            <p><strong>Add Inventory Item:</strong></p>
+            <ol>
+                <li>Enter item name (e.g., "NPK Fertilizer")</li>
+                <li>Select category (Seeds, Fertilizer, Equipment, etc.)</li>
+                <li>Input current quantity and unit</li>
+                <li>Set minimum quantity threshold</li>
+                <li>Add supplier information</li>
+                <li>Save the item</li>
+            </ol>
+            <p><strong>Low Stock Alerts:</strong></p>
+            <ul>
+                <li>Items below minimum quantity are highlighted in red</li>
+                <li>Check inventory regularly to avoid shortages</li>
+                <li>Update quantities after use or restocking</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Operations Module -->
+    <div class="help-section">
+        <h3>⚙️ Operations</h3>
+        <div class="help-content">
+            <h4>Tracking Farm Activities</h4>
+            <p><strong>Record Operations:</strong></p>
+            <ol>
+                <li>Select operation type (Spraying, Weeding, Irrigation, etc.)</li>
+                <li>Enter operation date</li>
+                <li>Specify field location</li>
+                <li>Add detailed description</li>
+                <li>Input cost (if applicable)</li>
+                <li>Record who performed the operation</li>
+                <li>Add any additional notes</li>
+            </ol>
+            <p><strong>Operation Types:</strong></p>
+            <ul>
+                <li><strong>Spraying:</strong> Pesticide or fungicide application</li>
+                <li><strong>Weeding:</strong> Weed removal activities</li>
+                <li><strong>Irrigation:</strong> Watering operations</li>
+                <li><strong>Fertilizing:</strong> Nutrient application</li>
+                <li><strong>Pruning:</strong> Plant maintenance</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sales Module -->
+    <div class="help-section">
+        <h3>💰 Sales</h3>
+        <div class="help-content">
+            <h4>Managing Sales Transactions</h4>
+            <p><strong>Record a Sale:</strong></p>
+            <ol>
+                <li>Enter sale date</li>
+                <li>Input customer name (optional)</li>
+                <li>Enter quantity sold and unit</li>
+                <li>Set price per unit</li>
+                <li>Total amount calculates automatically</li>
+                <li>Select payment status (Paid/Pending)</li>
+                <li>Add notes if needed</li>
+            </ol>
+            <p><strong>Tips:</strong></p>
+            <ul>
+                <li>Track pending payments to manage cash flow</li>
+                <li>Use notes to record payment methods</li>
+                <li>Regular sales records help forecast revenue</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Employee Tasks Module -->
+    <div class="help-section">
+        <h3>👷 Employee Tasks</h3>
+        <div class="help-content">
+            <h4>Assigning & Tracking Work</h4>
+            <p><strong>Assign a Task:</strong></p>
+            <ol>
+                <li>Select employee number (1-10)</li>
+                <li>Choose task date</li>
+                <li>Select task type</li>
+                <li>Specify field location</li>
+                <li>Add detailed description</li>
+                <li>Set start time and estimated hours</li>
+                <li>Assign the task</li>
+            </ol>
+            <p><strong>Task Management:</strong></p>
+            <ul>
+                <li><strong>Pending:</strong> Task assigned but not started</li>
+                <li><strong>In Progress:</strong> Task currently being worked on</li>
+                <li><strong>Completed:</strong> Task finished</li>
+                <li>Employees can start/finish their own tasks</li>
+                <li>Admins can update task status or delete tasks</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Reports Module -->
+    <div class="help-section">
+        <h3>📊 Reports</h3>
+        <div class="help-content">
+            <h4>Analyzing Farm Performance</h4>
+            <p><strong>Available Reports:</strong></p>
+            <ul>
+                <li><strong>Production Summary:</strong> Plant count, harvest totals, averages</li>
+                <li><strong>Financial Summary:</strong> Sales, costs, net income, pending payments</li>
+                <li><strong>Quality Distribution:</strong> Harvest breakdown by quality grade</li>
+                <li><strong>Operations Summary:</strong> Operation types and costs</li>
+                <li><strong>Field Performance:</strong> Productivity by field location</li>
+                <li><strong>Employee Summary:</strong> Task completion statistics</li>
+                <li><strong>Monthly Sales Trend:</strong> Sales over time</li>
+                <li><strong>Inventory Status:</strong> Low stock alerts</li>
+            </ul>
+            <p><strong>How to Use:</strong></p>
+            <ul>
+                <li>Reports update automatically based on your data</li>
+                <li>Use insights to make informed decisions</li>
+                <li>Identify trends and areas for improvement</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Common Questions -->
+    <div class="help-section">
+        <h3>❓ Common Questions</h3>
+        <div class="help-content">
+            <h4>Frequently Asked Questions</h4>
+            
+            <div class="faq-item">
+                <strong>Q: What's the difference between Admin and Guest login?</strong>
+                <p>A: Admins have full access to add, edit, and delete records. Guests (employees) can only view information but cannot make changes.</p>
+            </div>
+
+            <div class="faq-item">
+                <strong>Q: How do I change the theme?</strong>
+                <p>A: Use the toggle switch in the header (next to the logout button) to switch between light and dark themes. Your preference is saved automatically.</p>
+            </div>
+
+            <div class="faq-item">
+                <strong>Q: Can I delete a record?</strong>
+                <p>A: Yes, if you're logged in as Admin. Each record has a Delete button. Note: Deletion is permanent!</p>
+            </div>
+
+            <div class="faq-item">
+                <strong>Q: Why are some inventory items highlighted in red?</strong>
+                <p>A: Red highlighting indicates low stock - the quantity is at or below the minimum threshold you set.</p>
+            </div>
+
+            <div class="faq-item">
+                <strong>Q: How do I link a harvest to a specific plant?</strong>
+                <p>A: When adding a harvest record, select the plant from the dropdown. You can also leave it unselected for general harvests.</p>
+            </div>
+
+            <div class="faq-item">
+                <strong>Q: Can I export or print reports?</strong>
+                <p>A: Currently, you can use your browser's print function (Ctrl+P or Cmd+P) to print or save as PDF.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="help-section">
+        <h3>⭐ Best Practices</h3>
+        <div class="help-content">
+            <ul>
+                <li>📅 <strong>Update regularly:</strong> Enter data daily for accurate records</li>
+                <li>📝 <strong>Use notes:</strong> Add context to help future reference</li>
+                <li>🔍 <strong>Check reports weekly:</strong> Monitor trends and performance</li>
+                <li>📦 <strong>Maintain inventory:</strong> Keep stock levels updated</li>
+                <li>💰 <strong>Track payments:</strong> Follow up on pending payments</li>
+                <li>👥 <strong>Assign tasks clearly:</strong> Include specific instructions</li>
+                <li>🌱 <strong>Plan ahead:</strong> Use expected harvest dates for scheduling</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Support -->
+    <div class="help-section">
+        <h3>🆘 Need More Help?</h3>
+        <div class="help-content">
+            <p>If you encounter any issues or have questions not covered in this guide:</p>
+            <ul>
+                <li>Review the documentation in the project files</li>
+                <li>Check that your database connection is active</li>
+                <li>Ensure you're using a modern web browser</li>
+                <li>Try logging out and back in if you experience issues</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

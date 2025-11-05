@@ -463,6 +463,128 @@ h2 {
     gap: 20px;
 }
 
+/* Help Page Styles */
+.help-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.help-intro {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f0f9ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 8px;
+}
+
+body.light-theme .help-intro {
+    background: #e0f2fe;
+    color: #333;
+}
+
+.help-section {
+    background: white;
+    border: 2px solid #2563eb;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .help-section {
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.help-section h3 {
+    color: #1e40af;
+    font-size: 1.5em;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #dbeafe;
+}
+
+body.light-theme .help-section h3 {
+    color: #1e40af;
+    border-bottom-color: #bfdbfe;
+}
+
+.help-section h4 {
+    color: #2563eb;
+    font-size: 1.2em;
+    margin: 16px 0 12px 0;
+}
+
+body.light-theme .help-section h4 {
+    color: #1d4ed8;
+}
+
+.help-content {
+    color: #333;
+    line-height: 1.8;
+}
+
+body.light-theme .help-content {
+    color: #1f2937;
+}
+
+.help-content ul,
+.help-content ol {
+    margin: 12px 0 12px 24px;
+}
+
+.help-content li {
+    margin-bottom: 8px;
+}
+
+.help-content strong {
+    color: #1e40af;
+    font-weight: 600;
+}
+
+body.light-theme .help-content strong {
+    color: #1e3a8a;
+}
+
+.help-content p {
+    margin-bottom: 12px;
+}
+
+.faq-item {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border-left: 4px solid #60a5fa;
+}
+
+body.light-theme .faq-item {
+    background: #f1f5f9;
+    border-left-color: #3b82f6;
+}
+
+.faq-item strong {
+    display: block;
+    color: #1e40af;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+body.light-theme .faq-item strong {
+    color: #1e3a8a;
+}
+
+.faq-item p {
+    color: #475569;
+    margin: 0;
+}
+
+body.light-theme .faq-item p {
+    color: #334155;
+}
+
 /* Buttons */
 .btn {
     background: #2563eb;
