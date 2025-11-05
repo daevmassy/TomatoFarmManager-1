@@ -138,20 +138,20 @@ body.light-theme .form-group label {
 body.light-theme .activity-section {
     background: white;
     color: #000;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
 }
 
 body.light-theme footer {
     background: rgba(255, 255, 255, 0.95);
     color: #666;
-    border-top: 3px solid #dc2626;
-    box-shadow: 0 -4px 16px rgba(220, 38, 38, 0.1);
+    border-top: 3px solid #2563eb;
+    box-shadow: 0 -4px 16px rgba(37, 99, 235, 0.1);
 }
 
 body.light-theme .alert-success {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    color: #065f46;
-    border-left: 4px solid #10b981;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-left: 4px solid #3b82f6;
 }
 
 body.light-theme .alert-error {
@@ -694,67 +694,66 @@ h2 {
 
 .help-intro {
     font-size: 1.1em;
-    color: #666;
+    color: #ffffff;
     margin-bottom: 30px;
     padding: 24px;
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-    border-left: 6px solid #dc2626;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    border-left: 6px solid #2563eb;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.1);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
 body.light-theme .help-intro {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    color: #333;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
 }
 
 .help-section {
-    background: white;
-    border: 2px solid #dc2626;
+    background: #1a1a1a;
+    border: 2px solid #2563eb;
     border-radius: 16px;
     padding: 28px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
     transition: all 0.3s ease;
 }
 
 .help-section:hover {
-    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5);
     transform: translateY(-2px);
 }
 
 body.light-theme .help-section {
     background: #ffffff;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2);
 }
 
 .help-section h3 {
-    color: #dc2626;
+    color: #3b82f6;
     font-size: 1.6em;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 3px solid #fecaca;
+    border-bottom: 3px solid #2563eb;
     font-weight: 700;
 }
 
 body.light-theme .help-section h3 {
-    color: #dc2626;
-    border-bottom-color: #fca5a5;
+    color: #2563eb;
 }
 
 .help-section h4 {
-    color: #ef4444;
+    color: #60a5fa;
     font-size: 1.3em;
     margin: 16px 0 12px 0;
     font-weight: 600;
 }
 
 body.light-theme .help-section h4 {
-    color: #dc2626;
+    color: #3b82f6;
 }
 
 .help-content {
-    color: #333;
+    color: #ffffff;
     line-height: 1.8;
 }
 
@@ -772,12 +771,12 @@ body.light-theme .help-content {
 }
 
 .help-content strong {
-    color: #dc2626;
+    color: #3b82f6;
     font-weight: 700;
 }
 
 body.light-theme .help-content strong {
-    color: #b91c1c;
+    color: #2563eb;
 }
 
 .help-content p {
@@ -785,44 +784,44 @@ body.light-theme .help-content strong {
 }
 
 .faq-item {
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 16px;
-    border-left: 5px solid #dc2626;
+    border-left: 5px solid #2563eb;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .faq-item:hover {
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
     transform: translateX(5px);
 }
 
 body.light-theme .faq-item {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    border-left-color: #dc2626;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-left-color: #2563eb;
 }
 
 .faq-item strong {
     display: block;
-    color: #dc2626;
+    color: #60a5fa;
     margin-bottom: 8px;
     font-size: 1.1em;
     font-weight: 700;
 }
 
 body.light-theme .faq-item strong {
-    color: #b91c1c;
+    color: #1e40af;
 }
 
 .faq-item p {
-    color: #475569;
+    color: #e0e7ff;
     margin: 0;
 }
 
 body.light-theme .faq-item p {
-    color: #334155;
+    color: #1e3a8a;
 }
 
 /* Buttons with Gradients */
@@ -948,10 +947,10 @@ table tr:hover {
 }
 
 .alert-success {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    color: #065f46;
-    border-color: #10b981;
-    border-left: 6px solid #10b981;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-color: #3b82f6;
+    border-left: 6px solid #3b82f6;
 }
 
 .alert-error {
@@ -1071,11 +1070,11 @@ footer {
 
 .login-card {
     background: rgba(26, 26, 26, 0.95);
-    border: 2px solid #dc2626;
+    border: 2px solid #2563eb;
     border-radius: 16px;
     padding: 36px;
     margin-bottom: 24px;
-    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.4);
     backdrop-filter: blur(10px);
 }
 
@@ -1103,22 +1102,22 @@ footer {
 }
 
 .pagination-btn {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
     color: white;
     padding: 12px 24px;
     border-radius: 12px;
     text-decoration: none;
-    border: 2px solid #dc2626;
+    border: 2px solid #2563eb;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
 }
 
 .pagination-btn:hover {
-    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
-    border-color: #b91c1c;
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    border-color: #1d4ed8;
     transform: scale(1.05);
-    box-shadow: 0 6px 24px rgba(220, 38, 38, 0.5);
+    box-shadow: 0 6px 24px rgba(37, 99, 235, 0.6);
 }
 
 .pagination-info {
